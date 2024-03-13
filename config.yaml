@@ -2,17 +2,17 @@
 window_height: 1100             # height of the GUI window - adjust to fit your screen resolution
 window_width: 1400              # width of the GUI window
 # video specs
-frame_rate: 119.88              # frame rate of your video data (n. frames per second)
+frame_rate: 60                  # frame rate of your video data (n. frames per second)
 # ladder rung analysis
-likelihood_threshold: 0.1       # threshold of bodypart coordinate estimation likelihood, highlight estimates above threshold for ladder rung user validation
+likelihood_threshold: 0.05      # threshold of bodypart coordinate estimation likelihood, highlight estimates above threshold for ladder rung user validation
 depth_threshold: 0.8            # percentage of recovery relative to depth of previous footfall / slip
 threshold: ''                   # for threshold method in ladder rung
 # kinematics analysis
 lowpass_filter_cutoff: 6        # cutoff frequency for Butterworth filter applied to bodypart coordinate estimation in kinematics analysis
-pixels_per_cm: ''               # provide px - cm ratio of the video, if known
-cm_speed: ''                    # only for semi-automated kinematics analysis
-px_to_cm_speed_ratio: 0.4806    # only for fully automated kinematics analysis
+pixels_per_cm: 37.5          # provide px - cm ratio of the video, if known
+cm_speed: 8                     # only for semi-automated kinematics analysis
+px_to_cm_speed_ratio: 0.625  # only for fully automated kinematics analysis (0.4806)
 right_to_left: False            # direction of walking (False if animal walks from left to right)
 no_outlier_filter: False        # only for spontaneous walking setup (requires more testing; True to get parameters for all step cycles)
 dragging_filter: False          # only for spontaneous walking setup (requires more testing; False to get parameters also for potentially 100% dragging mice)
-
+px_speed: 5
