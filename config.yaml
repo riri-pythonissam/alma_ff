@@ -9,10 +9,10 @@ depth_threshold: 0.8            # percentage of recovery relative to depth of pr
 threshold: ''                   # for threshold method in ladder rung
 # kinematics analysis
 lowpass_filter_cutoff: 6        # cutoff frequency for Butterworth filter applied to bodypart coordinate estimation in kinematics analysis
-pixels_per_cm: 37.5          # provide px - cm ratio of the video, if known
-cm_speed: 8                     # only for semi-automated kinematics analysis
-px_to_cm_speed_ratio: 0.625  # only for fully automated kinematics analysis (0.4806)
+pixels_per_cm: 36          # provide px - cm ratio of the video, if known
+cm_speed: 20                     # only for semi-automated kinematics analysis
+px_to_cm_speed_ratio: 5.45 # only for fully automated kinematics analysis (0.4806)
 right_to_left: False            # direction of walking (False if animal walks from left to right)
 no_outlier_filter: False        # only for spontaneous walking setup (requires more testing; True to get parameters for all step cycles)
 dragging_filter: False          # only for spontaneous walking setup (requires more testing; False to get parameters also for potentially 100% dragging mice)
-px_speed: 5
+px_speed: 12

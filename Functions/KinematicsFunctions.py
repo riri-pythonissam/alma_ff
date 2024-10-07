@@ -37,7 +37,7 @@ def fix_column_names(pd_dataframe):
     return pd_dataframe, bodyparts
 
 
-def treadmill_correction(pd_dataframe, bodyparts, px_speed=5):  # px_speed = 8.09
+def treadmill_correction(pd_dataframe, bodyparts, px_speed=12):  # px_speed = 8.09
 
     correction = np.arange(0, len(pd_dataframe), 1)
     correction = correction * px_speed
@@ -360,7 +360,7 @@ def compute_limb_joint_angles(smooth_toe_x, smooth_toe_y,
 #         return limb, limb_len_means, limb_len_sds, step_heights, drag_percentages
 
 
-def extract_parameters(frame_rate, pd_dataframe, cutoff_f, bodypart, cm_speed=8, px_to_cm_speed_ratio=0.625, right_to_left=True):  # cm_speed=None
+def extract_parameters(frame_rate, pd_dataframe, cutoff_f, bodypart, cm_speed=20, px_to_cm_speed_ratio=5.45, right_to_left=True):  # cm_speed=None
     '''
     pd_dataframe: contains raw coordinates (not adjusted for treadmill movement, unfiltered)
     bodypart: which bodypart to use for stride estimation
@@ -429,12 +429,12 @@ def extract_parameters(frame_rate, pd_dataframe, cutoff_f, bodypart, cm_speed=8,
     x_change_filt = x_change[(x_change < np.mean(x_change) + 1*np.std(x_change)) &
                              (x_change > np.mean(x_change) - 1*np.std(x_change))]
 
-    px_speed, _ = scipy.stats.norm.fit(x_change_filt[x_change_filt > 0])
+    px_speed = 12  # px_speed, _ = scipy.stats.norm.fit(x_change_filt[x_change_filt > 0])
 
-    if cm_speed is None:
-        cm_speed = px_speed / px_to_cm_speed_ratio
+    # if cm_speed is None:
+    # cm_speed = px_speed / px_to_cm_speed_ratio
 
-    pixels_per_cm = 1 / (cm_speed / px_speed / frame_rate)
+    pixels_per_cm = 36  # pixels_per_cm = 1 / (cm_speed / px_speed / frame_rate)
     pd_dataframe_corrected = treadmill_correction(pd_dataframe, bodyparts, px_speed)
 
     smooth_toe_x = butterworth_filter(pd_dataframe_corrected['toe x'], frame_rate, cutoff_f)
@@ -602,11 +602,11 @@ def extract_parameters(frame_rate, pd_dataframe, cutoff_f, bodypart, cm_speed=8,
             # single frame "cycle" duration
             # extreme step height
 
-            if limb_len_max < 15 and stride_len_cm < 8 and stride_len > 0 and \
-                    cycle_dur_frame > 1 and step_height < 1.5 and step_height > 0:
+            # if limb_len_max < 15 and stride_len_cm < 8 and stride_len > 0 and \
+            #         cycle_dur_frame > 1 and step_height < 1.5 and step_height > 0:
 
-                # if limb_len_max < 22 and stride_len_cm < 12 and stride_len >= 0 and \
-                #         cycle_dur_frame >= 1 and step_height <= 1.5 and step_height >= 0:
+            if limb_len_max < 45 and stride_len_cm < 24 and stride_len >= 0 and \
+                    cycle_dur_frame >= 3 and step_height <= 4.5 and step_height >= 0:
 
                 starts_included.append(starts[i])
                 ends_included.append(ends[i])
@@ -622,6 +622,10 @@ def extract_parameters(frame_rate, pd_dataframe, cutoff_f, bodypart, cm_speed=8,
                 stride_lens.append(stride_len_cm)
 
                 step_heights.append(step_height)
+                if cycle_v < 0:
+                    print("cycle_v pidor")
+                if pixels_per_cm < 0:
+                    print("pixel pidor")
 
                 cycle_vs.append(cycle_v / pixels_per_cm)  # (px/s) / (px/cm) = cm/s
                 # or use averaged v from euclidean distance between every two frames?
@@ -865,7 +869,7 @@ def extract_parameters(frame_rate, pd_dataframe, cutoff_f, bodypart, cm_speed=8,
             dtw_y_plane_10_sds,
             dtw_xy_plane_10_means,
             dtw_xy_plane_10_sds
-        ]).T,
+        ], dtype=object).T,
             columns=[
             'stride_start (frame)',
             'stride_end (frame)',
@@ -916,7 +920,7 @@ def extract_parameters(frame_rate, pd_dataframe, cutoff_f, bodypart, cm_speed=8,
         ]), pd_dataframe, is_stance, bodyparts
 
 
-def extract_spontaneous_parameters(frame_rate, pd_dataframe, cutoff_f, pixels_per_cm=37.5, no_outlier_filter=False, dragging_filter=False):
+def extract_spontaneous_parameters(frame_rate, pd_dataframe, cutoff_f, pixels_per_cm=36, no_outlier_filter=False, dragging_filter=False):
     '''
     pd_dataframe: contains raw coordinates (not adjusted for treadmill movement, unfiltered)
     bodypart: which bodypart to use for stride estimation
@@ -1172,8 +1176,10 @@ def extract_spontaneous_parameters(frame_rate, pd_dataframe, cutoff_f, pixels_pe
                         # no swing phase!
                         step_height = 0
 
-                    if no_outlier_filter or (limb_len_max < 15 and stride_len_cm < 8 and
-                                             cycle_dur_frame > 1 and step_height < 1.5 and stride_len_cm > 1):
+                    # if no_outlier_filter or (limb_len_max < 15 and stride_len_cm < 8 and
+                    #                          cycle_dur_frame > 1 and step_height < 1.5 and stride_len_cm > 1):
+                    if no_outlier_filter or (limb_len_max < 45 and stride_len_cm < 24 and
+                                             cycle_dur_frame >= 3 and step_height <= 4.5 and stride_len_cm > 3):
                         starts_included.append(starts[i])
                         ends_included.append(ends[i])
 
